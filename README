@@ -1,0 +1,57 @@
+Tema 1 - PC : MINI-KERMIT
+Nume, prenume: Calin Catalina
+Grupa, seria: 324CA
+
+Data inceperii temei: 24 martie 2018
+Data finalizarii temei: 02 martie 2018
+
+Mod de lucru:
+
+	La implementarea temei, initial am definit 2 structuri, care ma vor
+ajuta la pregatirea pachetelor ce urmeaza a fi trimise: type_S si m_kermit.
+Structura type_S o folosesc atat la ksender, cand trimit pachetul de tip "S",
+cat si la kreceiver, cand trimit pachet ack pentru pachetul "S" primit de la
+sender.
+
+	KSENDER:
+	Inainte de trimitere, initializam mereu toate datele pachetului, dupa
+care cu while forever faceam operatia de transmitere si primire a pachetului
+urmator. Daca nu primeam raspuns in timp de 5 secunde, retrimiteam de maxim 3
+ori pachetul. In cazul in care primeam nack, pentru ca erau corupte datele,
+setam flagul nack pe 1 pentru a intra in urmatoarea iteratie, in care actualizam
+secventa pachetului, calculam crc pentru noile date din pachet si retrimiteam, iar
+daca primeam ack, atunci ieseam din while, pentru continuarea programului.
+	Pentru fiecare fisier, pregateam pachetele, mai intai de tip "F", apoi cele
+de tip "D". In cele de tip "F" am trimis argv[i], adica denumirile fisierelor primite
+ca parametru. Apoi calculam dimensiunea fisierului si o comparam cu 250, adica MAXL.
+Daca era mai mica, atunci citeam exact "size" caractere si trimiteam pachetul cu date.
+In cazul unor fisiere mai mari de 250, calculam cate pachete de 250 caractere pot
+trimite, scazand mereu din size-ul total nr de caractere trimise si confirmate de
+receiver, dupa care imi ramanea un nr mai mic de 250 de caractere pe care il citeam din
+fisier si le trimiteam. Dupa fiecare fisier citit, trimit pachetul de tip "Z", iar
+la sfarsit de transmisie, trimiteam pachetul de tip "B". Transmiterea tuturor 
+pachetelor este similara.
+
+	KRECEIVER:
+	In sursa data am asteptat 15 secunde mai intai pachetul de tip "S" si am
+trimis ack de cu data ca la "S" daca il primesc cu crc potrivit. Dupa care intr-un
+while 1 am primit toate pachetele, verificand mereu daca secventa este potrivita
+(daca e mai mica, probabil a primit un pachet pierdut mai devreme, deci il ignor).
+La fel, verific crc primit sa fie egal cu cel calculam in receiver. In cazul
+pachetelor de tip "F", creez si deschis un fisier cu denumirea necesara, in cazul
+pachetelor de tip "D" scriu datele in fisierul nou creat, in cazul pachetelor de tip
+"Z", inchid fisierul curent in care scriu, iar in cazul celor de tip "B", trimit ack
+si termin executia programului. La fel, pentru retrimitere, folosesc o structura
+in care tin minte ultimul mesaj de ack sau nack trimis de kreceiver.
+
+	Si la kreceiver si la ksender folosesc un contor care calculeaza cate ori
+s-a trimis un fisier dat, pentru a nu retrimite mai mult de 3 ori.
+
+
+
+Probleme intampinate:
+	Tema o testam la inceput pe fisiere text si foloseam functii potrivite doar
+operarii cu ele si cand am testat pe fisiere binare, a trebuit sa le modific, pentru
+a fi potrivite, asta a fost una din marile probleme.
+
+	
